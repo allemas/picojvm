@@ -1,11 +1,14 @@
 package com.allemas.classfile;
 
+import com.allemas.classfile.constantpool.ConstantPoolInfo;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
+
 
 public class ClassFileParser {
 
@@ -22,7 +25,7 @@ public class ClassFileParser {
         classFile.setMaxVersion(stream.readUnsignedShort());
 
         int constantPoolSize = stream.readUnsignedShort();
-        Set<ConstantPoolType> constantPoolTypes =
+        Set<ConstantPoolInfo> constantPoolTypes =
                 ConstantPool.parseConstantPoolTypes(stream, constantPoolSize - 1);
 
 
