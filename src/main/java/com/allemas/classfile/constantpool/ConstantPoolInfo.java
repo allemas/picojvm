@@ -1,8 +1,6 @@
 package com.allemas.classfile.constantpool;
 
 
-import com.allemas.classfile.ConstantPoolType;
-
 public class ConstantPoolInfo {
     private final ConstantPoolType type;
 

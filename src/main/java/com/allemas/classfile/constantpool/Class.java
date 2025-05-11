@@ -1,7 +1,5 @@
 package com.allemas.classfile.constantpool;
 
-import com.allemas.classfile.ConstantPoolType;
-
 
 /**
  * From class file bytecode
@@ -15,7 +13,7 @@ import com.allemas.classfile.ConstantPoolType;
  */
 public class Class extends ConstantPoolInfo {
     private int descriptorIndex;
-    private String name;
+    private java.lang.String name;
 
     public Class(int descriptorIndex) {
         super(ConstantPoolType.Class);
@@ -26,11 +24,11 @@ public class Class extends ConstantPoolInfo {
         return descriptorIndex;
     }
 
-    public void setName(String name) {
+    public void setName(java.lang.String name) {
         this.name = name;
     }
 
-    public String getName() {
+    public java.lang.String getName() {
         return name;
 
     }

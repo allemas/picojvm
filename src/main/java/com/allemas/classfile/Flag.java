@@ -1,5 +1,14 @@
 package com.allemas.classfile;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * JVM access flag are inspired by java class parser project
+ * https://github.com/viridiansoftware/java-class-parser/blob/master/src/main/java/com/viridiansoftware/java/ClassAccessFlag.java
+ * especially for values
+ */
 public enum Flag {
     ACC_PUBLIC(0x0001),
     ACC_FINAL(0x0010),
@@ -23,5 +32,16 @@ public enum Flag {
     public boolean isSet(int accessFlags) {
         return (accessFlags & this.value) != 0;
     }
+
+    static List<Flag> fromInt(int accessFlags) {
+        List<Flag> list = new ArrayList<>();
+        for (Flag flag : Flag.values()) {
+            if ((flag.getValue() & accessFlags) != 0) {
+                list.add(flag);
+            }
+        }
+        return list;
+    }
+
 
 }

@@ -1,7 +1,5 @@
 package com.allemas.classfile.constantpool;
 
-import com.allemas.classfile.ConstantPoolType;
-
 
 /**
  * #7 = Fieldref           #8.#9          // java/lang/System.out:Ljava/io/PrintStream;

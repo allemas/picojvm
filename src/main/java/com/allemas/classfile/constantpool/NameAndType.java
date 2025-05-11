@@ -1,7 +1,5 @@
 package com.allemas.classfile.constantpool;
 
-import com.allemas.classfile.ConstantPoolType;
-
 
 public class NameAndType extends ConstantPoolInfo {
     private int nameIndex;

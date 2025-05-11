@@ -1,12 +1,21 @@
 package com.allemas.classfile;
 
+import com.allemas.classfile.constantpool.ConstantPoolInfo;
+
+import java.util.List;
 import java.util.Set;
 
 public class ClassFile {
     int magicNumber;
     Integer minVersion;
     Integer maxVersion;
-    Set<Flag> flags;
+
+    public ConstantPoolInfo[] constantPoolInfos;
+    List<Flag> flags;
+
+    ConstantPoolInfo thisClass;
+    ConstantPoolInfo thisSuperclass;
+
 
     public int getMagicNumber() {
         return magicNumber;
@@ -32,13 +41,30 @@ public class ClassFile {
         this.maxVersion = maxVersion;
     }
 
-    public Set<Flag> getFlags() {
+    public List<Flag> getFlags() {
         return flags;
     }
 
-    public void setFlags(Set<Flag> flags) {
+    public void setFlags(List<Flag> flags) {
         this.flags = flags;
     }
+
+    public ConstantPoolInfo[] getConstantPoolInfos() {
+        return constantPoolInfos;
+    }
+
+    public void setConstantPoolInfos(ConstantPoolInfo[] constantPoolInfos) {
+        this.constantPoolInfos = constantPoolInfos;
+    }
+
+    public void setThisClass(int thisClassIndex) {
+        this.thisClass = constantPoolInfos[thisClassIndex - 1];
+    }
+
+    public void setThisSuperclass(int thisSuperclass) {
+        this.thisClass = constantPoolInfos[thisSuperclass - 1];
+    }
+
 
 
     @Override
