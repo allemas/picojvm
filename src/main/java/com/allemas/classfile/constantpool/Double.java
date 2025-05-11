@@ -11,7 +11,7 @@ public class Double extends ConstantPoolInfo {
         this.value = value;
     }
 
-    public float getValue() {
+    public double getValue() {
         return value;
     }
 

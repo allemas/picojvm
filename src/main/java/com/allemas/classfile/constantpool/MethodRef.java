@@ -1,4 +1,5 @@
 package com.allemas.classfile.constantpool;
+import com.allemas.classfile.ConstantPoolType;
 
 public class MethodRef extends ConstantPoolInfo {
     int classIndex;

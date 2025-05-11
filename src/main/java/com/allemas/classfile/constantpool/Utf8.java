@@ -2,6 +2,9 @@ package com.allemas.classfile.constantpool;
 
 import java.lang.String;
 
+import com.allemas.classfile.ConstantPoolType;
+
+
 public class Utf8 extends ConstantPoolInfo {
 
     private String value;
