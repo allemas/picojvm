@@ -2,6 +2,7 @@ package com.allemas.classfile.constantpool;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class ConstantPool {
 
@@ -53,7 +54,7 @@ public class ConstantPool {
 
                 case ConstantPoolType.Utf8 -> {
                     /**
-                     * Thanks to .readUTF we dont get mind with random string size
+                     * Thanks to .readUTF we don't get mind with random string size
                      *    #4 = Utf8               java/lang/Object
                      *    #5 = Utf8               <init>
                      *    #6 = Utf8               ()V
@@ -68,6 +69,20 @@ public class ConstantPool {
                 case ConstantPoolType.String -> {
                     int utf8Index = input.readUnsignedShort();
                     constantPoolTypes[index] = new com.allemas.classfile.constantpool.String(utf8Index);
+                }
+                case ConstantPoolType.Integer -> {
+                    int integerValue = input.readInt();
+                    constantPoolTypes[index] = new com.allemas.classfile.constantpool.Integer(integerValue);
+                }
+
+                case ConstantPoolType.Float -> {
+                    /**
+                     * Be careful ! Float is composed with 4 bytes !
+                     * https://www.baeldung.com/jvm-constant-pool#2-format
+                     */
+                    byte[] floatValue = new byte[4];
+                    input.readFully(floatValue);
+                    constantPoolTypes[index] = new com.allemas.classfile.constantpool.Float(ByteBuffer.wrap(floatValue).getFloat());
                 }
 
             }

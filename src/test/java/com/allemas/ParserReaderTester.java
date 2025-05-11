@@ -11,7 +11,6 @@ public class ParserReaderTester {
     private Logger logger = Logger.getLogger(ParserReaderTester.class.getName());
 
     @Test()
-
     public void parseClassFile() throws IOException {
         //  final File initialFile = new File("src/test/java/resources/MainBytecode.bytecode");
         final File initialFile = new File("src/test/java/resources/PicoJVM.class");
