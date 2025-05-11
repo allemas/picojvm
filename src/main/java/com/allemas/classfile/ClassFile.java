@@ -62,13 +62,16 @@ public class ClassFile {
     }
 
     public void setThisSuperclass(int thisSuperclass) {
-        this.thisClass = constantPoolInfos[thisSuperclass - 1];
+        this.thisSuperclass = constantPoolInfos[thisSuperclass - 1];
     }
-
 
 
     @Override
     public String toString() {
-        return String.format("ClassFile=(magicNumber=%s,minVersion=%s,maxVersion=%s)", magicNumber, minVersion, maxVersion);
+        return "ClassFile [magicNumber=" + magicNumber + ", minVersion=" + minVersion
+                + ", maxVersion=" + maxVersion + ", constantPoolInfos=" + constantPoolInfos
+                + ", flags=" + flags + ", thisClass=" + thisClass + ", thisSuperclass="
+                + thisSuperclass + "]";
+
     }
 }

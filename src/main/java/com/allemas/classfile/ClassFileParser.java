@@ -2,8 +2,8 @@ package com.allemas.classfile;
 
 import com.allemas.classfile.constantpool.ConstantPool;
 import com.allemas.classfile.constantpool.ConstantPoolInfo;
-import com.allemas.classfile.constantpool.ConstantPoolType;
 import com.allemas.classfile.constantpool.MethodRef;
+import com.allemas.classfile.constantpool.Utf8;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -41,9 +41,53 @@ public class ClassFileParser {
         classFile.setThisSuperclass(stream.readUnsignedShort());
 
         int interfacesCount = stream.readUnsignedShort();
+        System.out.println("Interfaces: " + interfacesCount);
+        for (int i = 0; i < interfacesCount; i++) {
+            //    int interfaceIndex = stream.readUnsignedByte();
+            //  System.out.println(interfaceIndex);
+        }
+        int fieldsCount = stream.readUnsignedShort();
+        System.out.println("Fields: " + fieldsCount);
 
+
+        int methodCount = stream.readUnsignedShort();
+        System.out.println("methodCount=" + methodCount);
+        for (int i = 0; i < methodCount; i++) {
+
+
+            var flags = Flag.fromInt(stream.readUnsignedShort());
+            var nameIndex = stream.readUnsignedShort();
+            var descIndex = stream.readUnsignedShort();
+            var attrCount = stream.readUnsignedShort();
+
+            System.out.println("Flags: " + flags);
+            System.out.println("name: " + nameIndex);
+
+
+            for (int j = 0; j < attrCount; j++) {
+                var name = stream.readUnsignedShort();
+                var attribute_length = stream.readUnsignedShort();
+                System.out.println(name + " " + attribute_length);
+                stream.skip(attribute_length);
+            }
+        }
+
+
+        int attributesCount = stream.readUnsignedShort();
+        System.out.println("attributeInfo=" + attributesCount);
+        for (int i = 0; i < attributesCount; i++) {
+            int attributeIndex = stream.readUnsignedShort();
+            System.out.println(attributeIndex);
+            System.out.println(stream.readInt());
+
+            String attributeName = getString(constantPoolTypes, attributeIndex);
+            System.out.println(attributeName);
+        }
 
     }
 
+    private String getString(ConstantPoolInfo[] constantPool, int index) {
+        return ((Utf8) constantPool[index - 1]).getValue();
+    }
 
 }

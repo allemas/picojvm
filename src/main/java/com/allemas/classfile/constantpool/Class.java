@@ -1,5 +1,6 @@
 package com.allemas.classfile.constantpool;
 
+import com.allemas.classfile.ConstantPoolType;
 
 /**
  * From class file bytecode
