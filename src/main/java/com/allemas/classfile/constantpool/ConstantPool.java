@@ -1,0 +1,103 @@
+package com.allemas.classfile.constantpool;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+
+public class ConstantPool {
+
+    /**
+     * ClassFile
+     * u4             magic;
+     * u2             minor_version;
+     * u2             major_version;
+     * u2             constant_pool_count; <---
+     * cp_info        constant_pool[constant_pool_count-1]; <---
+     * <p>
+     * Parse with the constant pool size the constant pool and create a Set with all types inside
+     * <p>
+     * When an iteration is done, you can find the constant pool tag, don't for forget to read
+     * the value above, if it's not done, you read the value not the next tag.
+     */
+    public static ConstantPoolInfo[] parseConstantPoolInfo(DataInputStream input, int constantPoolCount) throws IOException {
+        ConstantPoolInfo[] constantPoolTypes = new ConstantPoolInfo[constantPoolCount];
+
+        for (int index = 0; index < constantPoolCount; index++) {
+            int constantTag = input.readUnsignedByte();
+            ConstantPoolType tag = ConstantPoolType.build(constantTag);
+            switch (tag) {
+                case ConstantPoolType.Methodref -> {
+                    /**
+                     *  #1 = Methodref          #2.#3          // java/lang/Object."<init>":()V
+                     *  #2 = Class              #4             // java/lang/Object
+                     *  #3 = NameAndType        #5:#6          // "<init>":()V
+                     *  #4 = Utf8               java/lang/Object
+                     *
+                     *  classIndex = #2
+                     *  classAndNameIndex = #3
+                     */
+
+                    int classIndex = input.readUnsignedShort();
+                    int nameIndex = input.readUnsignedShort();
+                    constantPoolTypes[index] = new MethodRef(classIndex, nameIndex);
+                }
+
+                case ConstantPoolType.Class -> {
+                    int classDescriptionIndex = input.readUnsignedShort();
+                    constantPoolTypes[index] = new Class(classDescriptionIndex);
+                }
+                case ConstantPoolType.NameAndType -> {
+                    int nameIndex = input.readUnsignedShort();
+                    int typeIndex = input.readUnsignedShort();
+                    constantPoolTypes[index] = new NameAndType(nameIndex, typeIndex);
+                }
+
+                case ConstantPoolType.Utf8 -> {
+                    /**
+                     * Thanks to .readUTF we dont get mind with random string size
+                     *    #4 = Utf8               java/lang/Object
+                     *    #5 = Utf8               <init>
+                     *    #6 = Utf8               ()V
+                     */
+                    constantPoolTypes[index] = new Utf8(input.readUTF());
+                }
+                case ConstantPoolType.Fieldref -> {
+                    int classIndex = input.readUnsignedShort();
+                    int nameAndTypeIndex = input.readUnsignedShort();
+                    constantPoolTypes[index] = new FieldRef(classIndex, nameAndTypeIndex);
+                }
+                case ConstantPoolType.String -> {
+                    int utf8Index = input.readUnsignedShort();
+                    constantPoolTypes[index] = new com.allemas.classfile.constantpool.String(utf8Index);
+                }
+
+            }
+
+        }
+        return constantPoolTypes;
+    }
+
+    public static ConstantPoolInfo[] resolve(ConstantPoolInfo[] constantPool) {
+        for (ConstantPoolInfo cs : constantPool) {
+            switch (cs.getType()) {
+                case Methodref -> {
+                    MethodRef methodRef = (MethodRef) cs;
+                    Class c = (Class) constantPool[methodRef.getClassIndex() - 1];
+                    NameAndType nameAndType = (NameAndType) constantPool[methodRef.getNameAndTypeIndex() - 1];
+                    methodRef.setMethodClass(c);
+                    methodRef.setNameAndType(nameAndType);
+                }
+
+                case Class -> {
+                    Class tmpClass = (Class) cs;
+                    Utf8 stringData = (Utf8) constantPool[tmpClass.getIndex() - 1];
+                    tmpClass.setName(stringData.getValue());
+                }
+            }
+
+
+        }
+        return constantPool;
+    }
+
+
+}

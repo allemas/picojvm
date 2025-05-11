@@ -1,11 +1,19 @@
 package com.allemas.classfile;
 
+import com.allemas.classfile.constantpool.ConstantPool;
+import com.allemas.classfile.constantpool.ConstantPoolInfo;
+import com.allemas.classfile.constantpool.ConstantPoolType;
+import com.allemas.classfile.constantpool.MethodRef;
+
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 
 public class ClassFileParser {
 
@@ -22,8 +30,17 @@ public class ClassFileParser {
         classFile.setMaxVersion(stream.readUnsignedShort());
 
         int constantPoolSize = stream.readUnsignedShort();
-        Set<ConstantPoolType> constantPoolTypes =
-                ConstantPool.parseConstantPoolTypes(stream, constantPoolSize - 1);
+        ConstantPoolInfo[] constantPoolTypes =
+                ConstantPool.parseConstantPoolInfo(stream, constantPoolSize - 1);
+        constantPoolTypes = ConstantPool.resolve(constantPoolTypes);
+        classFile.setConstantPoolInfos(constantPoolTypes);
+
+        int accessflag = stream.readUnsignedShort();
+        classFile.setFlags(Flag.fromInt(accessflag));
+        classFile.setThisClass(stream.readUnsignedShort());
+        classFile.setThisSuperclass(stream.readUnsignedShort());
+
+        int interfacesCount = stream.readUnsignedShort();
 
 
     }
