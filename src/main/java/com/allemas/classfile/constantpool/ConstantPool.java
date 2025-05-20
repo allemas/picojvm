@@ -1,6 +1,7 @@
 package com.allemas.classfile.constantpool;
 
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -24,9 +25,11 @@ public class ConstantPool {
 
         for (int index = 0; index < constantPoolCount; index++) {
             int constantTag = input.readUnsignedByte();
-            ConstantPoolType tag = ConstantPoolType.build(constantTag);
+            ConstantPoolKind tag = ConstantPoolKind.build(constantTag);
+            System.out.println(tag);
             switch (tag) {
-                case ConstantPoolType.Methodref -> {
+
+                case ConstantPoolKind.Methodref -> {
                     /**
                      *  #1 = Methodref          #2.#3          // java/lang/Object."<init>":()V
                      *  #2 = Class              #4             // java/lang/Object
@@ -42,40 +45,43 @@ public class ConstantPool {
                     constantPoolTypes[index] = new MethodRef(classIndex, nameIndex);
                 }
 
-                case ConstantPoolType.Class -> {
+                case ConstantPoolKind.Class -> {
                     int classDescriptionIndex = input.readUnsignedShort();
                     constantPoolTypes[index] = new Class(classDescriptionIndex);
                 }
-                case ConstantPoolType.NameAndType -> {
+                case ConstantPoolKind.NameAndType -> {
                     int nameIndex = input.readUnsignedShort();
                     int typeIndex = input.readUnsignedShort();
                     constantPoolTypes[index] = new NameAndType(nameIndex, typeIndex);
                 }
 
-                case ConstantPoolType.Utf8 -> {
+                case ConstantPoolKind.Utf8 -> {
                     /**
                      * Thanks to .readUTF we don't get mind with random string size
                      *    #4 = Utf8               java/lang/Object
                      *    #5 = Utf8               <init>
                      *    #6 = Utf8               ()V
                      */
-                    constantPoolTypes[index] = new Utf8(input.readUTF());
+                    byte[] bytes = new byte[input.readUnsignedShort()];
+                    input.read(bytes);
+                    constantPoolTypes[index] = new Utf8(bytes);
+                    //                    constantPoolTypes[index] = new Utf8(input.readUTF());
                 }
-                case ConstantPoolType.Fieldref -> {
+                case ConstantPoolKind.Fieldref -> {
                     int classIndex = input.readUnsignedShort();
                     int nameAndTypeIndex = input.readUnsignedShort();
                     constantPoolTypes[index] = new FieldRef(classIndex, nameAndTypeIndex);
                 }
-                case ConstantPoolType.String -> {
+                case ConstantPoolKind.String -> {
                     int utf8Index = input.readUnsignedShort();
                     constantPoolTypes[index] = new com.allemas.classfile.constantpool.String(utf8Index);
                 }
-                case ConstantPoolType.Integer -> {
+                case ConstantPoolKind.Integer -> {
                     int integerValue = input.readInt();
                     constantPoolTypes[index] = new com.allemas.classfile.constantpool.Integer(integerValue);
                 }
 
-                case ConstantPoolType.Float -> {
+                case ConstantPoolKind.Float -> {
                     /**
                      * Be careful ! Float is composed with 4 bytes !
                      * https://www.baeldung.com/jvm-constant-pool#2-format
@@ -84,7 +90,9 @@ public class ConstantPool {
                     input.readFully(floatValue);
                     constantPoolTypes[index] = new com.allemas.classfile.constantpool.Float(ByteBuffer.wrap(floatValue).getFloat());
                 }
-
+                default -> {
+                    System.out.println("????????");
+                }
             }
 
         }

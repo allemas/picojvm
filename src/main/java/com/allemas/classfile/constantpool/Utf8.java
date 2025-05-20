@@ -1,21 +1,21 @@
 package com.allemas.classfile.constantpool;
 
 import java.lang.String;
+import java.nio.charset.StandardCharsets;
 
 import com.allemas.classfile.ConstantPoolType;
 
 
 public class Utf8 extends ConstantPoolInfo {
 
-    private String value;
+    private final byte[] bytes;
 
-    public Utf8(String value) {
+    Utf8(byte[] bytes) {
         super(ConstantPoolType.Utf8);
-        this.value = value;
+        this.bytes = bytes;
     }
 
-    public String getValue() {
-        return value;
+    public java.lang.String getValue() {
+        return new java.lang.String(bytes, StandardCharsets.UTF_8);
     }
-
 }

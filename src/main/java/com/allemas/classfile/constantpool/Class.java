@@ -18,6 +18,7 @@ public class Class extends ConstantPoolInfo {
 
     public Class(int descriptorIndex) {
         super(ConstantPoolType.Class);
+        System.out.println("class=" + descriptorIndex);
         this.descriptorIndex = descriptorIndex;
     }
 

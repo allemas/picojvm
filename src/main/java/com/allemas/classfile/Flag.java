@@ -33,7 +33,7 @@ public enum Flag {
         return (accessFlags & this.value) != 0;
     }
 
-    static List<Flag> fromInt(int accessFlags) {
+    public  static List<Flag> fromInt(int accessFlags) {
         List<Flag> list = new ArrayList<>();
         for (Flag flag : Flag.values()) {
             if ((flag.getValue() & accessFlags) != 0) {

@@ -1,9 +1,6 @@
 package com.allemas.classfile;
 
 
-
-
-
 public enum Opcode {
 
     Nop(0x00, 0),
@@ -238,6 +235,10 @@ public enum Opcode {
     Opcode(int opcode, int operandLength) {
         this.opcode = (byte) opcode;
         this.operandLength = operandLength;
+    }
+
+    public int getOperandLength() {
+        return this.operandLength;
     }
 
     public static Opcode getOpcode(byte value) {

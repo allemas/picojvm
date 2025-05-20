@@ -9,6 +9,7 @@ public class NameAndType extends ConstantPoolInfo {
     public NameAndType(int nameIndex, int typeIndex) {
         super(ConstantPoolType.NameAndType);
         this.nameIndex = nameIndex;
+
         this.typeIndex = typeIndex;
     }
 

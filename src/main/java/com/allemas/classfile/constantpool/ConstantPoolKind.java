@@ -1,6 +1,6 @@
 package com.allemas.classfile.constantpool;
 
-public enum ConstantPoolType {
+public enum ConstantPoolKind {
     Class(7),
     Fieldref(9),
     Methodref(10),
@@ -14,17 +14,20 @@ public enum ConstantPoolType {
     Utf8(1),
     MethodHandle(15),
     MethodType(16),
-    InvokeDynamic(18);
+    Dynamic(17),
+    InvokeDynamic(18),
+    Module(19),
+    Package(20);
 
     private int value;
 
-    ConstantPoolType(int val) {
+    ConstantPoolKind(int val) {
         this.value = val;
     }
 
-    public static ConstantPoolType build(int value) {
-        for (ConstantPoolType constantPoolType : ConstantPoolType.values()) {
-            if (constantPoolType.value == value) return constantPoolType;
+    public static ConstantPoolKind build(int value) {
+        for (ConstantPoolKind constantPoolKind : ConstantPoolKind.values()) {
+            if (constantPoolKind.value == value) return constantPoolKind;
         }
         throw new RuntimeException(java.lang.String.format("Could not find the corresponding constantPoolType from %d value", value));
     }

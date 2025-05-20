@@ -7,8 +7,4 @@ public class PicoJvm {
 
     }
 
-    class PicoOptions {
-
-    }
-
 }

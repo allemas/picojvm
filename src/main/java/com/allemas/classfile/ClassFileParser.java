@@ -4,6 +4,10 @@ import com.allemas.classfile.constantpool.ConstantPool;
 import com.allemas.classfile.constantpool.ConstantPoolInfo;
 import com.allemas.classfile.constantpool.MethodRef;
 import com.allemas.classfile.constantpool.Utf8;
+import com.allemas.classfile.field.FieldInfo;
+import com.allemas.classfile.field.FieldParser;
+import com.allemas.classfile.field.FieldType;
+import jdk.jshell.spi.ExecutionControl;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -21,7 +25,7 @@ public class ClassFileParser {
     private static final int MAGIC_NUMBER = 0xCAFEBABE;
 
 
-    public void parse(InputStream classFilestream) throws IOException {
+    public void parse(InputStream classFilestream) throws IOException, ExecutionControl.NotImplementedException {
         DataInputStream stream = new DataInputStream(classFilestream);
         ClassFile classFile = new ClassFile();
 
@@ -32,8 +36,7 @@ public class ClassFileParser {
         int constantPoolSize = stream.readUnsignedShort();
         ConstantPoolInfo[] constantPoolTypes =
                 ConstantPool.parseConstantPoolInfo(stream, constantPoolSize - 1);
-        constantPoolTypes = ConstantPool.resolve(constantPoolTypes);
-        classFile.setConstantPoolInfos(constantPoolTypes);
+        classFile.setConstantPoolInfos(ConstantPool.resolve(constantPoolTypes));
 
         int accessflag = stream.readUnsignedShort();
         classFile.setFlags(Flag.fromInt(accessflag));
@@ -47,44 +50,12 @@ public class ClassFileParser {
             //  System.out.println(interfaceIndex);
         }
         int fieldsCount = stream.readUnsignedShort();
-        System.out.println("Fields: " + fieldsCount);
-
+        System.out.println("fieldsCount" + fieldsCount);
+        FieldInfo[] fieldTypes = FieldParser.build(stream, fieldsCount, constantPoolTypes);
 
         int methodCount = stream.readUnsignedShort();
-        for (int i = 0; i < methodCount; i++) {
-
-            var flags = Flag.fromInt(stream.readUnsignedShort());
-            var nameIndex = stream.readUnsignedShort();
-            var descIndex = stream.readUnsignedShort();
-            var attrCount = stream.readUnsignedShort();
-
-            for (int j = 0; j < attrCount; j++) {
-                var name = stream.readUnsignedShort();
-                var attribute_length = stream.readInt();
-                String attributeName = getString(constantPoolTypes, name);
-                System.out.println(attributeName);
-
-                if (attributeName.equals("Code")) {
-                    var nameindex = stream.readUnsignedShort();
-                    var codeAttribute_length = stream.readInt();
-                    var maxStack = stream.readUnsignedShort();
-                    var minLocal = stream.readUnsignedShort();
-                    var codeLenght = stream.readInt();
-
-                    for (int c = 0; c < codeLenght; c++) {
-                        byte code = (byte) stream.readUnsignedByte();
-                        Opcode opc = Opcode.getOpcode(code);
-                        System.out.println(opc);
-                    }
-
-
-                }
-
-                stream.skip(attribute_length);
-
-            }
-        }
-
+        System.out.println("methodCount " + methodCount);
+        MethodInfo[] methods = MethodInfo.build(stream, methodCount, constantPoolTypes);
 
         int attributesCount = stream.readUnsignedShort();
         System.out.println("attributeInfo=>>" + attributesCount);
