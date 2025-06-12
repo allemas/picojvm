@@ -26,9 +26,7 @@ public class ConstantPool {
         for (int index = 0; index < constantPoolCount; index++) {
             int constantTag = input.readUnsignedByte();
             ConstantPoolKind tag = ConstantPoolKind.build(constantTag);
-            System.out.println(tag);
             switch (tag) {
-
                 case ConstantPoolKind.Methodref -> {
                     /**
                      *  #1 = Methodref          #2.#3          // java/lang/Object."<init>":()V

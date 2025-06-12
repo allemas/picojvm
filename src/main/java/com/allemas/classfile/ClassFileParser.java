@@ -29,7 +29,12 @@ public class ClassFileParser {
         DataInputStream stream = new DataInputStream(classFilestream);
         ClassFile classFile = new ClassFile();
 
-        classFile.setMagicNumber(stream.readInt());
+        var magicNumber = stream.readInt();
+        if (magicNumber != MAGIC_NUMBER) {
+            throw new RuntimeException("Invalid magic number: " + magicNumber);
+        }
+
+        classFile.setMagicNumber(magicNumber);
         classFile.setMinVersion(stream.readUnsignedShort());
         classFile.setMaxVersion(stream.readUnsignedShort());
 
@@ -50,23 +55,26 @@ public class ClassFileParser {
             //  System.out.println(interfaceIndex);
         }
         int fieldsCount = stream.readUnsignedShort();
-        System.out.println("fieldsCount" + fieldsCount);
         FieldInfo[] fieldTypes = FieldParser.build(stream, fieldsCount, constantPoolTypes);
+        classFile.fields = fieldTypes;
 
         int methodCount = stream.readUnsignedShort();
         System.out.println("methodCount " + methodCount);
-        MethodInfo[] methods = MethodInfo.build(stream, methodCount, constantPoolTypes);
+        classFile.methods = MethodInfo.build(stream, methodCount, constantPoolTypes);
 
         int attributesCount = stream.readUnsignedShort();
         System.out.println("attributeInfo=>>" + attributesCount);
-        for (int i = 0; i < attributesCount; i++) {
+        AttributeInfo.build(stream, attributesCount, constantPoolTypes);
+
+/*        for (int i = 0; i < attributesCount; i++) {
             int attributeIndex = stream.readUnsignedShort();
             System.out.println(attributeIndex);
             System.out.println(stream.readInt());
 
             String attributeName = getString(constantPoolTypes, attributeIndex);
             System.out.println(attributeName);
-        }
+        }*/
+
 
     }
 

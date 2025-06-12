@@ -1,8 +1,10 @@
 package com.allemas;
 
+import com.allemas.classfile.AttributeInfo;
 import com.allemas.classfile.ClassFileParser;
 import com.allemas.classfile.Flag;
 import jdk.jshell.spi.ExecutionControl;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -30,5 +32,13 @@ public class ParserReaderTester {
 
         parser.parse(bytecodeStream);
 
+    }
+
+    @Test
+    public void testLineNumber() {
+        AttributeInfo.LineNumberTable lineNumberTable = new AttributeInfo.LineNumberTable();
+        lineNumberTable.add(10, 10);
+        lineNumberTable.add(20, 20);
+        Assertions.assertEquals(lineNumberTable.getLineNumberTable().length, 2);
     }
 }

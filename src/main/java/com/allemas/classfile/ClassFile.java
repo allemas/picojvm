@@ -1,6 +1,7 @@
 package com.allemas.classfile;
 
 import com.allemas.classfile.constantpool.ConstantPoolInfo;
+import com.allemas.classfile.field.FieldInfo;
 
 import java.util.List;
 import java.util.Set;
@@ -15,7 +16,10 @@ public class ClassFile {
 
     ConstantPoolInfo thisClass;
     ConstantPoolInfo thisSuperclass;
-
+    int[] interfaces;
+    FieldInfo[] fields;
+    MethodInfo[] methods;
+    AttributeInfo[] attributes;
 
     public int getMagicNumber() {
         return magicNumber;

@@ -4,13 +4,14 @@ import com.allemas.classfile.AttributeInfo;
 import com.allemas.classfile.Flag;
 import com.allemas.classfile.constantpool.ConstantPoolInfo;
 import com.allemas.classfile.constantpool.Utf8;
+import jdk.jshell.spi.ExecutionControl;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.List;
 
 public class FieldParser {
-    public static FieldInfo[] build(DataInputStream stream, int fieldCount, ConstantPoolInfo[] constantPoolTypes) throws IOException {
+    public static FieldInfo[] build(DataInputStream stream, int fieldCount, ConstantPoolInfo[] constantPoolTypes) throws IOException, ExecutionControl.NotImplementedException {
 
         FieldInfo[] fieldInfos = new FieldInfo[fieldCount];
 
@@ -24,16 +25,12 @@ public class FieldParser {
                 int attributeLength = stream.readInt();
                 String attributeName = ((Utf8) constantPoolTypes[stream.readUnsignedShort() - 1]).getValue();
 
-                System.out.println(attributeName);
-                System.out.println("You should parse !");
-                stream.skipBytes(attributeLength);
+                throw new ExecutionControl.NotImplementedException("Parsing not implemented");
             }
 
             fieldInfos[index] = new FieldInfo(flag, name, descriptionNotParsed, new AttributeInfo[1]);
-
         }
+
         return fieldInfos;
     }
-
-
 }
